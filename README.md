@@ -22,3 +22,6 @@ fis3 server start --type node
 ```
 npm start
 ```
+
+访问
+http://127.0.0.1:8080/page/createjs-demo/index.html
