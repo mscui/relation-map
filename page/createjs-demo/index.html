@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>CreateJs</title>
+    <script type="text/javascript" src="/static/mod.js"></script>
+    <script src="/static/lib/easeljs-NEXT.combined.js"></script>
+    <script src="/static/preloadjs-0.6.2.min.js"></script>
+    <script src="/static/tweenjs-0.6.2.min.js"></script>
+    <link href="/node_modules/cicons/dist/cicons.css" media="all" rel="stylesheet" type="text/css">
+    <script href="/node_modules/alloyfinger/alloy_finger.js"></script>
+
+    <!-- <link href="/static/_assets/css/shared.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/_assets/css/examples.css" rel="stylesheet" type="text/css"/>
+    <script src="/static/_assets/js/examples.js"></script> -->
+</head>
+<body>
+    <style>
+        html,
+        body,
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 10px;
+            overflow: hidden;
+        }
+        body {
+            background: url('/static/image/bg.png');
+        }
+        ul,
+        li {
+            list-style: none;
+        }
+        .relation-map {
+            position: absolute;
+            /*position: relative;*/
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            overflow: scroll;
+            /* 增加该属性，可以增加弹性 */
+            -webkit-overflow-scrolling: touch;
+            /*z-index: 999;*/
+        }
+        .recommend-tooltip,
+        .detail-tooltip {
+            position: fixed;
+            bottom: -9.5rem;
+            width: 100%;
+            /*height: 60px;*/
+            /*background-color: #eee;*/
+            -webkit-transform: translateZ(0);
+        }
+        .recommend-tooltip {
+            z-index: 2;
+        }
+        .detail-tooltip {
+            z-index: 1;
+        }
+        .arrow {
+            width: 15rem;
+            padding: 2px;
+            font-size: 14px;
+            line-height: 14px;
+            text-align: center;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #f4f4f4;
+            border-bottom: 0;
+            color: #c9c9c9;
+            box-sizing: border-box;
+            top: 13rem;
+        }
+        .recommend-tooltip-main,
+        .detail-tooltip-main {
+            height: 13rem;
+            /*background-color: #efefef;*/
+            background-color: #fff;
+            border-top: 1px solid #f4f4f4;
+            box-sizing: border-box;
+
+        }
+        .detail-tooltip-main {
+            top: 13rem;
+            padding: 1rem;
+        }
+        .recommend-tooltip-main,
+        .recommend-tooltip .arrow {
+            top: 9.5rem;
+        }
+        .recommend-tooltip-title {
+            padding: 1rem;
+        }
+
+        .recommend-tooltip-main-title {
+            color: #f24b46;
+            font-size: 16px;
+        }
+        .recommend-tooltip-main-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .recommend-tooltip-main-list {
+            /*  建立弹性框 */
+            display: -webkit-flex;
+            -webkit-flex-direction: row;
+            display: flex;
+            flex-direction: row;
+            width: 70rem;
+            overflow: scroll;
+        }
+        .recommend-tooltip-main-list-item {
+            width: 12.5%;
+            display: inline-block;
+            text-align: center;
+        }
+        .recommend-tooltip-main-list-item img {
+            height: 6rem;
+            width: 6rem;
+            margin: 0 auto .5rem;
+            display: block;
+        }
+        .detail-tooltip-main-title {
+            text-align: center;
+            font-size: 14px;
+            margin: 0 auto .5rem;
+        }
+        .detail-tooltip-main-title a {
+            text-decoration: none;
+        }
+        .detail-tooltip-main-content img {
+            height: 8rem;
+            width: 8rem;
+            margin-right: 1rem;
+            display: inline-block;
+        }
+        .recommend-tooltip-main-list-item span {
+            margin-bottom: 1rem;
+            color: #000;
+        }
+        .detail-tooltip-main-title-link {
+            margin-left: .5rem;
+        }
+        .detail-tooltip-main-content {
+            display: flex;
+        }
+        .detail-tooltip-main-text {
+            width: 75%;
+            padding: 0;
+            margin: 0;
+            font: 14px/20px Arial,Helvetica,sans-serif;
+            height: 8rem;
+        }
+        .line-clamp4 {
+            display: -webkit-box;
+            overflow: hidden;
+            white-space: normal;
+            text-overflow: ellipsis;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+        }
+        .loading {
+            height: 1100px;
+            width: 100%;
+            background-color: #fff;
+            color: #000;
+            z-index: 999;
+            position: relative;
+            text-align: center;
+            line-height: 500px;
+            cursor: default;
+        }
+        .landscape {
+            height: 1100px;
+            width: 100%;
+            background-color: #fff;
+            color: #000;
+            z-index: 999;
+            position: relative;
+            text-align: center;
+            line-height: 400px;
+            cursor: default;
+            display: none;
+        }
+    </style>
+    <div class="loading" onclick='return false;'>
+        加载中...
+    </div>
+    <div class="landscape" onclick='return false;'>
+        竖屏才是正确打开方式！
+    </div>
+    <div class="relation-map">
+        <canvas id="relation-map-canvas">
+        </canvas>
+    </div>
+    <div class="recommend-tooltip">
+        <div class="arrow">
+            <span class="arrow-font icon-arrow-top"></span>
+        </div>
+        <div class="recommend-tooltip-main">
+            <div class="recommend-tooltip-title">
+                <span class="recommend-tooltip-main-title">热门人物图谱</span>
+            </div>
+            <div class="recommend-tooltip-main-wrapper">
+                <div class="recommend-tooltip-main-scroll">
+                    <ul class="recommend-tooltip-main-list">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="detail-tooltip">
+        <div class="arrow">
+            <span class="arrow-font icon-arrow-top"></span>
+        </div>
+        <div class="detail-tooltip-main">
+            <p class="detail-tooltip-main-title">
+                <span class="detail-tooltip-main-title-name">靖王（萧景琰）</span>
+                <span>饰演者</span>
+                <a href="#" class="detail-tooltip-main-title-link">王凯</a>
+            </p>
+            <div class="detail-tooltip-main-content">
+                <img class="detail-tooltip-main-content-img" src="/static/image/1.jpeg" alt="">
+                <p class="detail-tooltip-main-text line-clamp4">
+                    这个段落，在源代码中包含许多行，但是浏览器。忽略了它们，这个段落，在源代码中包含。许多行但是浏览器忽略了它们。段落的行数依赖于浏览器窗口的大小。如果调节浏览器窗口的大小，将改变段落中的行数。
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // require('createjs-demo.es');
+        require('tweenjs-demo.es');
+        // require('mask.js');
+        // require('example.js');
+    </script>
+</body>
+</html>
