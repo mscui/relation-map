@@ -6,4 +6,5 @@ page/intersection-observer/
 page/zrender-demo/
 node_modules/
 .idea/
+package-lock.json
 

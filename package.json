@@ -1,0 +1,30 @@
+{
+  "name": "relation-map",
+  "version": "1.0.0",
+  "description": "relation map",
+  "main": "fis-conf.js",
+  "dependencies": {
+    "cicons": "^2.8.0",
+    "alloyfinger": "^0.1.10",
+    "fis3-hook-node_modules": "^2.2.8",
+    "zepto": "^1.2.0",
+    "zrender": "^3.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mscui/relation-map.git"
+  },
+  "keywords": [
+    "create-js"
+  ],
+  "author": "mscui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mscui/relation-map/issues"
+  },
+  "homepage": "https://github.com/mscui/relation-map#readme"
+}
